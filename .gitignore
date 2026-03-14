@@ -1,0 +1,17 @@
+# ===== Frontend =====
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+frontend/.env
+
+# ===== Backend (Node.js) =====
+backend/node_modules/
+
+# ===== Database =====
+database/*.db
+database/*.sqlite
+
+# ===== General =====
+*.log
+*.tmp
+.DS_Store
