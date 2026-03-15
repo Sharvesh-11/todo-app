@@ -5,7 +5,7 @@ function App() {
   const [input, setInput] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:5000/todos")
+    fetch("/todos")
       .then(res => res.json())
       .then(data => setTodos(data));
   }, []);
