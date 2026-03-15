@@ -12,7 +12,7 @@ function App() {
 
   const addTodo = () => {
     if (!input) return;
-    fetch("http://localhost:5000/todos", {
+    fetch("/todos", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: input }),
@@ -25,7 +25,7 @@ function App() {
   };
 
   const deleteTodo = (id) => {
-    fetch(`http://localhost:5000/todos/${id}`, { method: "DELETE" })
+    fetch(`/todos/${id}`, { method: "DELETE" })
       .then(() => setTodos(todos.filter(t => t.id !== id)));
   };
 
