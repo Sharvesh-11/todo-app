@@ -16,7 +16,7 @@ jobs:
         run: docker build -t todo-app:latest .
 
       - name: Run container
-        run: docker run -d --name todo-test -p 3000:3000 todo-app:latest
+        run: docker run -d --name todo-test --restart unless-stopped -p 5000:5000 todo-app:latest
 
       - name: Check container is running
         run: |
@@ -43,4 +43,4 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/todo-app:latest
             docker stop todo-app || true
             docker rm todo-app || true
-            docker run -d --name todo-app -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/todo-app:latest
+            docker run -d --name todo-app --restart unless-stopped -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/todo-app:latest
