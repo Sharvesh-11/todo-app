@@ -1,0 +1,47 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-test-push-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: docker build -t todo-app:latest .
+
+      - name: Run container
+        run: docker run -d --name todo-test -p 3000:3000 todo-app:latest
+
+      - name: Check container is running
+        run: |
+          sleep 5
+          docker ps | grep todo-test
+          docker logs todo-test
+
+      - name: Login to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Push image to Docker Hub
+        run: |
+          docker tag todo-app:latest ${{ secrets.DOCKER_USERNAME }}/todo-app:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/todo-app:latest
+ 
+      -name: deploy to EC2
+       uses: appleboy/action@master
+      
+       with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/todo-app:latest
+            docker stop todo-app || true
+            docker rm todo-app || true
+            docker run -d --name todo-app -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/todo-app:latest
